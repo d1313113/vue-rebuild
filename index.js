@@ -1,4 +1,4 @@
-new Vue({
+let vm = new Vue({
   el: '#app',
   data: {
     msg: "我是vue项目的重现",
@@ -8,6 +8,8 @@ new Vue({
   methods: {
     fn() {
       console.log('fnfff');
+      this.$data.msg = "哈哈";
+      console.log(this.$data.msg);
     }
   }
 });

@@ -6,6 +6,9 @@ class Vue {
     this.$data = options.data;
     this.$methods = options.methods
 
+    // 监听数据
+    new Observer(this.$data);
+
     // 1.2 编译模板,当root元素存在的时候,编译模板
     if (this.$el) {
       // 调用模板,传入参数,传入根元素以及Vue实例

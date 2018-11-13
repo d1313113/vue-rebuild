@@ -123,15 +123,41 @@ const CompileUtils = {
     if (reg.test(text)) {
       let expr = RegExp.$1;
       node.textContent = text.replace(reg, this.getVMValue(vm, expr));
+
+      // 订阅者
+      new Watcher(vm, expr, newValue => {
+        node.textContent = text.replace(reg, newValue);
+      })
     }
   },
   // 解析v-text指令
   text(node, vm, expr) {
     node.textContent = this.getVMValue(vm, expr);
+
+    // 订阅者
+    new Watcher(vm, expr, (newValue, oldValue) => {
+      node.textContent = newValue
+    })
   },
   // 解析v-html指令
   html(node, vm, expr) {
     node.innerHTML = this.getVMValue(vm, expr);
+
+    // 订阅者
+    new Watcher(vm, expr, newValue => {
+      node.innerHTML = newValue
+    })
+  },
+  model(node, vm, expr) {
+    node.value = this.getVMValue(vm, expr)
+    // 实现双向数据绑定,给node注册input事件,当元素的value改变时,修改对应的数据
+    node.addEventListener("input", () => {
+      this.setVMValue(vm, expr, this.value);
+    })
+
+    new Watcher(vm, expr, newValue => {
+      node.value = newValue;
+    })
   },
   eventHandler(node, vm, type, expr) {
     // debugger
@@ -146,6 +172,7 @@ const CompileUtils = {
       node.addEventListener(eventType, fn.bind(vm));
     }
   },
+  // 获取VM中的数据
   getVMValue(vm, expr) {
     // 获取到data中的数据
     let data = vm.$data;
@@ -154,5 +181,19 @@ const CompileUtils = {
       data = data[key];
     });
     return data;
+  },
+  // 设置VM中的数据
+  setVMValue(vm, expr, value) {
+    let data = vm.$data;
+    // 修复嵌套结构的对象数据
+    let arr = expr.split(".");
+
+    arr.forEach((key, index) => {
+      if (index < arr.length - 1) {
+        data = data[key];
+      } else {
+        data[key] = value
+      }
+    });
   }
 }

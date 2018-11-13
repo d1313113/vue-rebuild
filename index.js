@@ -8,7 +8,7 @@ let vm = new Vue({
   methods: {
     fn() {
       console.log('fnfff');
-      this.$data.msg = "哈哈";
+      this.msg = "哈哈";
       console.log(this.$data.msg);
     }
   }

@@ -10,9 +10,14 @@
   <div id="app">
     <div>
         <div>我是vue的demo</div>
-        <div>{{msg}}</div>
+        <div v-text="text"></div>
+        <div v-html="msg2"></div>
+        <button v-on:click="fn">{{msg}}</button>
+        <button @click="fn">{{msg}}</button>
     </div>
   </div>
+  <script src="./src/compile.js"></script>
   <script src="./src/vue.js"></script>
+  <script src="./index.js"></script>
 </body>
 </html>
